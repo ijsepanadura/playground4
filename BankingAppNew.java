@@ -29,6 +29,7 @@ public class BankingAppNew{
             switch(option){
                 case 1 : addAccount(); break;
                 case 2 : moneyDeposit(); break;
+                case 3 : moneyWithdraw(); break;
                 case 7 : System.out.print(CLEAR);System.exit(0);
                 default : dashBoard();
 
@@ -106,6 +107,33 @@ public class BankingAppNew{
                 }
                 deposit = deposit + Double.valueOf(details.get(acctNum-1).get(2));
                 details.get(acctNum-1).add(2,deposit+"");
+                System.out.printf("new account balance is          : Rs. %,.2f\n",Float.valueOf(details.get(acctNum-1).get(2)));
+                if(getStringInput("Do you want to try again ? (Y/n) ").toUpperCase().equals("Y")){
+                    continue;
+                }else break;
+            } while (true); 
+        }
+    }
+    public static void moneyWithdraw(){
+        int acctNum = getAccNum();
+        double withdraw;
+        if(details.size()>0){  
+            do {
+                System.out.printf("current account balance is      : Rs. %,.2f\n",Float.valueOf(details.get(acctNum-1).get(2)));
+                withdraw = getDoubleInput("Withdraw Amount                 ");
+                if(withdraw<100){
+                    System.out.printf(ERROR_MESSAGE,"Insufficient amount to Withdraw ");
+                    if(getStringInput("Do you want to try again ? (Y/n) ").toUpperCase().equals("Y")){
+                        continue;
+                    }else break;
+                }else if((Double.valueOf(details.get(acctNum-1).get(2))-withdraw)<1000){
+                    System.out.printf(ERROR_MESSAGE,"Exceed to Account minimum balance ");
+                    if(getStringInput("Do you want to try again ? (Y/n) ").toUpperCase().equals("Y")){
+                        continue;
+                    }else break;
+                }
+                withdraw = Double.valueOf(details.get(acctNum-1).get(2))-withdraw;
+                details.get(acctNum-1).add(2,withdraw+"");
                 System.out.printf("new account balance is          : Rs. %,.2f\n",Float.valueOf(details.get(acctNum-1).get(2)));
                 if(getStringInput("Do you want to try again ? (Y/n) ").toUpperCase().equals("Y")){
                     continue;
