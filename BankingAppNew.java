@@ -14,6 +14,7 @@ public class BankingAppNew{
     final static String SUCCESS_MESSEAGE = String.format("%s%s%s",COLOR_GREEN_BOLD,"%s",RESET);
 
     static ArrayList<ArrayList<String>> details = new ArrayList<ArrayList<String>>();
+    
 
 
     public static void main(String[] args) {
@@ -32,7 +33,7 @@ public class BankingAppNew{
                 default : dashBoard();
 
             }
-        }while(false);        
+        }while(true);        
         
     }
     public static int dashBoard(){
@@ -76,7 +77,7 @@ public class BankingAppNew{
         
         System.out.printf("%-25s: SDB-%05d \n","New Account ID",(details.size() + 1));
         String name = getName();
-        double intialDepo = getDeposit("Intial Deposit");
+        double intialDepo = getDeposit("Intial Deposit",5000);
         details.add(new ArrayList<String>());
         details.get(details.size()-1).add((details.size()+1)+"");
         details.get(details.size()-1).add(name);
@@ -85,13 +86,16 @@ public class BankingAppNew{
         System.out.println();
         System.out.printf("SDB-%05d:%s's Account has been created succesfully\n",
                             details.size(),details.get(details.size()-1).get(1));
-        if(getStringInput("Do you want to an add new Account (Y/n)? :").toUpperCase()=="Y"){
+        if(getStringInput("Do you want to add a new Account (Y/n)? :").toUpperCase().equals("Y")){
+            headLine(1);
             addAccount();
         } 
-        dashBoard();        
+                
 
     }
     public static void moneyDeposit(){
+        int acctNum = getAccNum();
+        
 
     }
     public static String getName(){
@@ -129,13 +133,14 @@ public class BankingAppNew{
         scanner.skip(System.lineSeparator());
         return input;
     } 
-    public static double getDeposit(String title){
+    public static double getDeposit(String title, int limit){
         boolean valid= true;
         Double depositIn;
         do {
             depositIn = getDoubleInput(title);
-            if(depositIn<5000){
-                System.out.printf(ERROR_MESSAGE,"Intial Deposit should be greater than Rs.5000.00\n");
+            if(depositIn<limit){
+                System.out.printf(ERROR_MESSAGE,"Intial Deposit should be greater than ");
+                System.out.printf("Rs. %,2d.00\n",limit);
                 valid = false;
                 continue;
             }
@@ -144,7 +149,37 @@ public class BankingAppNew{
 
         return depositIn;
     }
+    public static int getAccNum(){
+        boolean valid = true;
+        boolean countCheck = false;
+        String index="";
+        validationB:
+        do {
+            String acctNum = getStringInput("Enter Account Number (SDB-xxxxx):");
+            if(acctNum.isEmpty()){
+                System.out.println("Account number can't be empty");
+                valid= false;
+                continue;
+            }
+            for (int i =4 ; i < acctNum.length(); i++) {
+                if(!(Character.isDigit(acctNum.charAt(i)) && acctNum.startsWith("SDB-") && acctNum.length()==9)){
+                    System.out.println(acctNum.charAt(i));
+                    System.out.println("Account number format is invalid");
+                    valid= false;
+                    if(getStringInput("Do you want to try again ? (Y/n) ").equals("Y"))continue validationB;
+                    else dashBoard();
+                    
+                }else if(countCheck || acctNum.charAt(i)!='0'){
+                    index += acctNum.charAt(i);
+                    countCheck= true;
+                }
+            }  
+              
+        } while (!valid);
 
+        return Integer.valueOf(index);
+    }
+    
 }
 
 
