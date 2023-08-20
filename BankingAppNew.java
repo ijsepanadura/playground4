@@ -10,8 +10,8 @@ public class BankingAppNew{
     final static String COLOR_RED_BOLD = "\033[31;1m";
     final static String RESET = "\033[0m";
 
-    final static String ERROR_MESSAGE = String.format(" %s%s%s",COLOR_RED_BOLD,"%s",RESET);
-    final static String SUCCESS_MESSEAGE = String.format("%s%s%s",COLOR_GREEN_BOLD,"%s",RESET);
+    final static String ERROR_MESSAGE = String.format(" %s%s%s\n",COLOR_RED_BOLD,"%s",RESET);
+    final static String SUCCESS_MESSEAGE = String.format("%s%s%s\n",COLOR_GREEN_BOLD,"%s",RESET);
 
     static ArrayList<ArrayList<String>> details = new ArrayList<ArrayList<String>>();
     
@@ -90,13 +90,28 @@ public class BankingAppNew{
             headLine(1);
             addAccount();
         } 
-                
-
     }
     public static void moneyDeposit(){
         int acctNum = getAccNum();
-        
-
+        double deposit;
+        if(details.size()>0){  
+            do {
+                System.out.printf("current account balance is      : Rs. %,.2f\n",Float.valueOf(details.get(acctNum-1).get(2)));
+                deposit = getDoubleInput("Deposit Amount                  ");
+                if(deposit<500){
+                    System.out.printf(ERROR_MESSAGE,"Insufficient amount ");
+                    if(getStringInput("Do you want to try again ? (Y/n) ").toUpperCase().equals("Y")){
+                        continue;
+                    }else break;
+                }
+                deposit = deposit + Double.valueOf(details.get(acctNum-1).get(2));
+                details.get(acctNum-1).add(2,deposit+"");
+                System.out.printf("new account balance is          : Rs. %,.2f\n",Float.valueOf(details.get(acctNum-1).get(2)));
+                if(getStringInput("Do you want to try again ? (Y/n) ").toUpperCase().equals("Y")){
+                    continue;
+                }else break;
+            } while (true); 
+        }
     }
     public static String getName(){
         boolean valid= true;
@@ -153,31 +168,55 @@ public class BankingAppNew{
         boolean valid = true;
         boolean countCheck = false;
         String index="";
-        validationB:
+        int pass=0;
         do {
-            String acctNum = getStringInput("Enter Account Number (SDB-xxxxx):");
-            if(acctNum.isEmpty()){
-                System.out.println("Account number can't be empty");
-                valid= false;
-                continue;
-            }
-            for (int i =4 ; i < acctNum.length(); i++) {
-                if(!(Character.isDigit(acctNum.charAt(i)) && acctNum.startsWith("SDB-") && acctNum.length()==9)){
-                    System.out.println(acctNum.charAt(i));
-                    System.out.println("Account number format is invalid");
+            valid = true;
+            if(details.size()==0 ){
+                System.out.println("No accounts in memory please add an account");
+                valid = false;
+                break;
+            }else{
+                String acctNum = getStringInput("Enter Account Number (SDB-xxxxx)");
+                if(acctNum.isEmpty()){
+                    System.out.printf(ERROR_MESSAGE,"Account number can't be empty");
                     valid= false;
-                    if(getStringInput("Do you want to try again ? (Y/n) ").equals("Y"))continue validationB;
-                    else dashBoard();
-                    
-                }else if(countCheck || acctNum.charAt(i)!='0'){
-                    index += acctNum.charAt(i);
-                    countCheck= true;
+                    continue;
+                }else if(!acctNum.startsWith("SDB-") || acctNum.length()!=9){
+                    System.out.printf(ERROR_MESSAGE,"Account number format is invalid");
+                    valid = false;
+                }else if(valid){
+                    for (int i =4 ; i < acctNum.length(); i++) {
+                        if(!Character.isDigit(acctNum.charAt(i))){
+                            System.out.printf(ERROR_MESSAGE,"Account number format is invalid");
+                            valid= false; 
+                            break;                   
+                        }else if(countCheck || acctNum.charAt(i)!='0'){
+                            index += acctNum.charAt(i);
+                            countCheck= true;
+                        }
+                    }   
                 }
-            }  
+            }
+            
+            pass = index.equals("") ? 0:Integer.valueOf(index);
+            
+            // if(valid == false && getStringInput("Do you want to try again ? (Y/n) ").toUpperCase().equals("Y")){
+            //     continue;
+            // }
+            
+            
+
+            if(valid && details.get(pass-1).size()== 0){
+                System.out.printf(ERROR_MESSAGE,"Account is not found");
+                valid = false;
+            }
+            if(valid == false && getStringInput("Do you want to try again ? (Y/n) ").toUpperCase().equals("Y")){
+                continue;
+            }else break;
               
         } while (!valid);
-
-        return Integer.valueOf(index);
+        if(details.size()==0 )getStringInput("Enter any key to shift to dashboard");
+        return pass;
     }
     
 }
