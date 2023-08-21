@@ -83,9 +83,9 @@ public class BankingAppNew{
         String name = getName();
         double intialDepo = getDeposit("Intial Deposit           : Rs.",5000);
         details.add(new ArrayList<String>());
-        details.get(details.size()-1).add((details.size()+1)+"");
+        details.get(details.size()-1).add((details.size())+"");
         details.get(details.size()-1).add(name);
-        details.get(details.size()-1).add(intialDepo+"");
+        details.get(details.size()-1).add(intialDepo + "");
 
         System.out.println();
         System.out.printf("SDB-%05d:%s's Account has been created succesfully\n",
@@ -216,6 +216,7 @@ public class BankingAppNew{
                     System.out.printf(ERROR_MESSAGE,"Account number format is invalid");
                     valid = false;
                 }else if(valid){
+                    index="";
                     for (int i =4 ; i < acctNum.length(); i++) {
                         if(!Character.isDigit(acctNum.charAt(i))){
                             System.out.printf(ERROR_MESSAGE,"Account number format is invalid");
@@ -294,7 +295,23 @@ public class BankingAppNew{
             }else break;
         }while(true);
     }
-    public static void
+    public static void deleteAccount(){
+        do {
+            int accNum = getAccNum("Enter account number to delete (SDB-xxxxx)  ");
+            String name=details.get(accNum-1).get(1);
+            System.out.printf("Account holder name is       : %s\n",name);
+            System.out.printf("Current Account balance is   : Rs. %.2f\n",Float.valueOf(details.get(accNum-1).get(2)));
+            if(getStringInput("Are you surre to delete this account ? (Y/n) ").toUpperCase().equals("Y")){
+                System.out.println(details);
+                details.get(accNum-1).clear();
+                System.out.println(details);
+                System.out.printf("SDB-%05d : %s has been deleted succesfully \n",accNum,name);               
+            }else break;
+            if(getStringInput("Do you want to continue ? (Y/n) ").toUpperCase().equals("Y")){
+                continue;
+            }else break;
+        } while (true);
+    }
     
 }
 
