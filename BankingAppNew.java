@@ -300,17 +300,19 @@ public class BankingAppNew{
     public static void deleteAccount(){
         do {
             int accNum = getAccNum("Enter account number to delete (SDB-xxxxx)  ");
-            String name=details.get(accNum-1).get(1);
-            System.out.printf("Account holder name is       : %s\n",name);
-            System.out.printf("Current Account balance is   : Rs. %.2f\n",Float.valueOf(details.get(accNum-1).get(2)));
-            if(getStringInput("Are you surre to delete this account ? (Y/n) ").toUpperCase().equals("Y")){
-                System.out.println(details);
-                details.get(accNum-1).clear();
-                System.out.println(details);
-                System.out.printf("SDB-%05d : %s has been deleted succesfully \n",accNum,name);               
-            }else break;
-            if(getStringInput("Do you want to continue ? (Y/n) ").toUpperCase().equals("Y")){
-                continue;
+            if(details.size()>0 && details.get(accNum-1).size()>0){
+                String name=details.get(accNum-1).get(1);
+                System.out.printf("Account holder name is       : %s\n",name);
+                System.out.printf("Current Account balance is   : Rs. %.2f\n",Float.valueOf(details.get(accNum-1).get(2)));
+                if(getStringInput("Are you surre to delete this account ? (Y/n) ").toUpperCase().equals("Y")){
+                    System.out.println(details);
+                    details.get(accNum-1).clear();
+                    System.out.println(details);
+                    System.out.printf("SDB-%05d : %s has been deleted succesfully \n",accNum,name);               
+                }else break;
+                if(getStringInput("Do you want to continue ? (Y/n) ").toUpperCase().equals("Y")){
+                    continue;
+                }else break;
             }else break;
         } while (true);
     }
