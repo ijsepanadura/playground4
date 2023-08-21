@@ -30,6 +30,7 @@ public class BankingAppNew{
                 case 1 : addAccount(); break;
                 case 2 : moneyDeposit(); break;
                 case 3 : moneyWithdraw(); break;
+                case 4 : moneyTransfer(); break;
                 case 7 : System.out.print(CLEAR);System.exit(0);
                 default : dashBoard();
 
@@ -93,7 +94,7 @@ public class BankingAppNew{
         } 
     }
     public static void moneyDeposit(){
-        int acctNum = getAccNum();
+        int acctNum = getAccNum("Enter Account Number (SDB-xxxxx)");
         double deposit;
         if(details.size()>0){  
             do {
@@ -115,7 +116,7 @@ public class BankingAppNew{
         }
     }
     public static void moneyWithdraw(){
-        int acctNum = getAccNum();
+        int acctNum = getAccNum("Enter Account Number (SDB-xxxxx)");
         double withdraw;
         if(details.size()>0){  
             do {
@@ -192,7 +193,7 @@ public class BankingAppNew{
 
         return depositIn;
     }
-    public static int getAccNum(){
+    public static int getAccNum(String title){
         boolean valid = true;
         boolean countCheck = false;
         String index="";
@@ -204,7 +205,7 @@ public class BankingAppNew{
                 valid = false;
                 break;
             }else{
-                String acctNum = getStringInput("Enter Account Number (SDB-xxxxx)");
+                String acctNum = getStringInput(title);
                 if(acctNum.isEmpty()){
                     System.out.printf(ERROR_MESSAGE,"Account number can't be empty");
                     valid= false;
@@ -245,6 +246,45 @@ public class BankingAppNew{
         } while (!valid);
         if(details.size()==0 )getStringInput("Enter any key to shift to dashboard");
         return pass;
+    }
+    public static void moneyTransfer(){
+        int acccNumFrom;
+        int acccNumTo;
+        double moneyFrom;
+        double moneyTo;
+        acccNumFrom = getAccNum("Enter from account number (SDB-xxxxx)");
+        acccNumTo = getAccNum("Enter from account number (SDB-xxxxx)");
+        System.out.printf("From account balance  : %.2f \n",Float.valueOf(details.get(acccNumFrom-1).get(2)));
+        System.out.printf("From account balance  : %.2f \n",Float.valueOf(details.get(acccNumTo-1).get(2)));
+        withdrawValid(acccNumFrom);
+        String y = getStringInput("CLEAR");
+
+
+       
+    }
+    public static void withdrawValid(int account){
+        double withdraw;
+        do {
+                System.out.printf("current account balance is      : Rs. %,.2f\n",Float.valueOf(details.get(account-1).get(2)));
+                withdraw = getDoubleInput("Withdraw Amount                 ");
+                if(withdraw<100){
+                    System.out.printf(ERROR_MESSAGE,"Insufficient amount to Withdraw ");
+                    if(getStringInput("Do you want to try again ? (Y/n) ").toUpperCase().equals("Y")){
+                        continue;
+                    }else break;
+                }else if((Double.valueOf(details.get(account-1).get(2))-withdraw)<1000){
+                    System.out.printf(ERROR_MESSAGE,"Exceed to Account minimum balance ");
+                    if(getStringInput("Do you want to try again ? (Y/n) ").toUpperCase().equals("Y")){
+                        continue;
+                    }else break;
+                }
+                withdraw = Double.valueOf(details.get(account-1).get(2))-withdraw;
+                details.get(account-1).add(2,withdraw+"");
+                System.out.printf("new account balance is          : Rs. %,.2f\n",Float.valueOf(details.get(account-1).get(2)));
+                if(getStringInput("Do you want to try again ? (Y/n) ").toUpperCase().equals("Y")){
+                    continue;
+                }else break;
+            } while (true);
     }
     
 }
