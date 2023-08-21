@@ -287,11 +287,13 @@ public class BankingAppNew{
     public static void checkBalance(){
         do{
             int accNum = getAccNum("Enter account number (SDB-xxxxx)  :");
-            System.out.printf("Account holder name is       : %s\n",details.get(accNum-1).get(1));
-            System.out.printf("Current Account balance is   : Rs. %.2f\n",Float.valueOf(details.get(accNum-1).get(2)));
-            System.out.printf("Available Account balance is : Rs. %.2f\n",Float.valueOf(details.get(accNum-1).get(2))-500);
-            if(getStringInput("Do you want to continue ? (Y/n) ").toUpperCase().equals("Y")){
-                continue;
+            if(details.get(accNum-1).size()>0){
+                System.out.printf("Account holder name is       : %s\n",details.get(accNum-1).get(1));
+                System.out.printf("Current Account balance is   : Rs. %.2f\n",Float.valueOf(details.get(accNum-1).get(2)));
+                System.out.printf("Available Account balance is : Rs. %.2f\n",Float.valueOf(details.get(accNum-1).get(2))-500);
+                if(getStringInput("Do you want to continue ? (Y/n) ").toUpperCase().equals("Y")){
+                    continue;
+                }else break;
             }else break;
         }while(true);
     }
