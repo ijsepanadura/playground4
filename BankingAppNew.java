@@ -31,6 +31,8 @@ public class BankingAppNew{
                 case 2 : moneyDeposit(); break;
                 case 3 : moneyWithdraw(); break;
                 case 4 : moneyTransfer(); break;
+                case 5 : checkBalance(); break;
+                case 6 : deleteAccount(); break;
                 case 7 : System.out.print(CLEAR);System.exit(0);
                 default : dashBoard();
 
@@ -79,7 +81,7 @@ public class BankingAppNew{
         
         System.out.printf("%-25s: SDB-%05d \n","New Account ID",(details.size() + 1));
         String name = getName();
-        double intialDepo = getDeposit("Intial Deposit",5000);
+        double intialDepo = getDeposit("Intial Deposit           : Rs.",5000);
         details.add(new ArrayList<String>());
         details.get(details.size()-1).add((details.size()+1)+"");
         details.get(details.size()-1).add(name);
@@ -99,7 +101,7 @@ public class BankingAppNew{
         if(details.size()>0){  
             do {
                 System.out.printf("current account balance is      : Rs. %,.2f\n",Float.valueOf(details.get(acctNum-1).get(2)));
-                deposit = getDoubleInput("Deposit Amount                  ");
+                deposit = getDoubleInput("Deposit Amount                  : Rs. ");
                 if(deposit<500){
                     System.out.printf(ERROR_MESSAGE,"Insufficient amount ");
                     if(getStringInput("Do you want to try again ? (Y/n) ").toUpperCase().equals("Y")){
@@ -121,14 +123,14 @@ public class BankingAppNew{
         if(details.size()>0){  
             do {
                 System.out.printf("current account balance is      : Rs. %,.2f\n",Float.valueOf(details.get(acctNum-1).get(2)));
-                withdraw = getDoubleInput("Withdraw Amount                 ");
+                withdraw = getDoubleInput("Withdraw Amount                 : Rs. ");
                 if(withdraw<100){
                     System.out.printf(ERROR_MESSAGE,"Insufficient amount to Withdraw ");
                     if(getStringInput("Do you want to try again ? (Y/n) ").toUpperCase().equals("Y")){
                         continue;
                     }else break;
-                }else if((Double.valueOf(details.get(acctNum-1).get(2))-withdraw)<1000){
-                    System.out.printf(ERROR_MESSAGE,"Exceed to Account minimum balance ");
+                }else if((Double.valueOf(details.get(acctNum-1).get(2))-withdraw)<500){
+                    System.out.printf(ERROR_MESSAGE,"Exceed the Account minimum balance ");
                     if(getStringInput("Do you want to try again ? (Y/n) ").toUpperCase().equals("Y")){
                         continue;
                     }else break;
@@ -172,7 +174,7 @@ public class BankingAppNew{
         return input;
     }
     public static double getDoubleInput(String title){
-        System.out.printf("%-25s: ",title);
+        System.out.print(title);
         double input = scanner.nextDouble();
         scanner.skip(System.lineSeparator());
         return input;
@@ -250,42 +252,49 @@ public class BankingAppNew{
     public static void moneyTransfer(){
         int acccNumFrom;
         int acccNumTo;
-        double moneyFrom;
-        double moneyTo;
         acccNumFrom = getAccNum("Enter from account number (SDB-xxxxx)");
-        acccNumTo = getAccNum("Enter from account number (SDB-xxxxx)");
-        System.out.printf("From account balance  : %.2f \n",Float.valueOf(details.get(acccNumFrom-1).get(2)));
-        System.out.printf("From account balance  : %.2f \n",Float.valueOf(details.get(acccNumTo-1).get(2)));
-        withdrawValid(acccNumFrom);
-        String y = getStringInput("CLEAR");
+        acccNumTo = getAccNum("Enter To account number   (SDB-xxxxx)");
+        System.out.printf("Sender current account balance  : Rs. %.2f \n",Float.valueOf(details.get(acccNumFrom-1).get(2)));
+        System.out.printf("Reciver current account balance : Rs. %.2f \n",Float.valueOf(details.get(acccNumTo-1).get(2)));
 
-
-       
-    }
-    public static void withdrawValid(int account){
-        double withdraw;
+        double transfer;
         do {
-                System.out.printf("current account balance is      : Rs. %,.2f\n",Float.valueOf(details.get(account-1).get(2)));
-                withdraw = getDoubleInput("Withdraw Amount                 ");
-                if(withdraw<100){
-                    System.out.printf(ERROR_MESSAGE,"Insufficient amount to Withdraw ");
+                transfer = getDoubleInput("Transfer Amount                 : Rs. ");
+                if(transfer<100){
+                    System.out.printf(ERROR_MESSAGE,"Insufficient amount to transfer ");
                     if(getStringInput("Do you want to try again ? (Y/n) ").toUpperCase().equals("Y")){
                         continue;
                     }else break;
-                }else if((Double.valueOf(details.get(account-1).get(2))-withdraw)<1000){
-                    System.out.printf(ERROR_MESSAGE,"Exceed to Account minimum balance ");
+                }else if((Double.valueOf(details.get(acccNumFrom-1).get(2))-1.02*transfer)<500){
+                    System.out.printf(ERROR_MESSAGE,"Exceed the Account minimum balance ");
                     if(getStringInput("Do you want to try again ? (Y/n) ").toUpperCase().equals("Y")){
                         continue;
                     }else break;
                 }
-                withdraw = Double.valueOf(details.get(account-1).get(2))-withdraw;
-                details.get(account-1).add(2,withdraw+"");
-                System.out.printf("new account balance is          : Rs. %,.2f\n",Float.valueOf(details.get(account-1).get(2)));
+                double currentBalSend = Double.valueOf(details.get(acccNumFrom-1).get(2))-1.02*transfer;
+                System.out.println(currentBalSend);
+                double currentBalReciv = Double.valueOf(details.get(acccNumTo-1).get(2))+ transfer;
+                details.get(acccNumFrom-1).set(2, currentBalSend+"");
+                System.out.printf("new Sender account balance is   : Rs. %,.2f\n",Float.valueOf(details.get(acccNumFrom-1).get(2)));
+                details.get(acccNumTo-1).set(2,currentBalReciv+"");
+                System.out.printf("new Reciever account balance is : Rs. %,.2f\n",Float.valueOf(details.get(acccNumTo-1).get(2)));
                 if(getStringInput("Do you want to try again ? (Y/n) ").toUpperCase().equals("Y")){
                     continue;
                 }else break;
             } while (true);
     }
+    public static void checkBalance(){
+        do{
+            int accNum = getAccNum("Enter account number (SDB-xxxxx)  :");
+            System.out.printf("Account holder name is       : %s\n",details.get(accNum-1).get(1));
+            System.out.printf("Current Account balance is   : Rs. %.2f\n",Float.valueOf(details.get(accNum-1).get(2)));
+            System.out.printf("Available Account balance is : Rs. %.2f\n",Float.valueOf(details.get(accNum-1).get(2))-500);
+            if(getStringInput("Do you want to continue ? (Y/n) ").toUpperCase().equals("Y")){
+                continue;
+            }else break;
+        }while(true);
+    }
+    public static void
     
 }
 
