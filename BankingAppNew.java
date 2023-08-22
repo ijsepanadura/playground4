@@ -98,7 +98,7 @@ public class BankingAppNew{
     public static void moneyDeposit(){
         int acctNum = getAccNum("Enter Account Number (SDB-xxxxx)");
         double deposit;
-        if(details.size()>0){  
+        if(acctNum>0 && details.size()>0 && details.get(acctNum-1).size()>0){  
             do {
                 System.out.printf("current account balance is      : Rs. %,.2f\n",Float.valueOf(details.get(acctNum-1).get(2)));
                 deposit = getDoubleInput("Deposit Amount                  : Rs. ");
@@ -120,7 +120,7 @@ public class BankingAppNew{
     public static void moneyWithdraw(){
         int acctNum = getAccNum("Enter Account Number (SDB-xxxxx)");
         double withdraw;
-        if(details.size()>0){  
+        if(acctNum>0 && details.size()>0 && details.get(acctNum-1).size()>0 ){  
             do {
                 System.out.printf("current account balance is      : Rs. %,.2f\n",Float.valueOf(details.get(acctNum-1).get(2)));
                 withdraw = getDoubleInput("Withdraw Amount                 : Rs. ");
@@ -158,7 +158,7 @@ public class BankingAppNew{
             }
             for(int i=0; i<nameIn.length(); i++){
                 if(!(Character.isLetter(nameIn.charAt(i)) || Character.isSpaceChar(nameIn.charAt(i)))){
-                    System.out.printf(ERROR_MESSAGE,"Name is Invalid it should be contained only letters & space\n");
+                    System.out.printf(ERROR_MESSAGE,"Name is Invalid, it should be contained only letters & space");
                     valid = false;
                     continue validationA;
                 }      
@@ -185,8 +185,7 @@ public class BankingAppNew{
         do {
             depositIn = getDoubleInput(title);
             if(depositIn<limit){
-                System.out.printf(ERROR_MESSAGE,"Intial Deposit should be greater than ");
-                System.out.printf("Rs. %,2d.00\n",limit);
+                System.out.printf(ERROR_MESSAGE,String.format("Intial Deposit should be greater than Rs. %,2d.00", limit));
                 valid = false;
                 continue;
             }
@@ -254,12 +253,13 @@ public class BankingAppNew{
         int acccNumFrom;
         int acccNumTo;
         acccNumFrom = getAccNum("Enter from account number (SDB-xxxxx)");
-        acccNumTo = getAccNum("Enter To account number   (SDB-xxxxx)");
-        System.out.printf("Sender current account balance  : Rs. %.2f \n",Float.valueOf(details.get(acccNumFrom-1).get(2)));
-        System.out.printf("Reciver current account balance : Rs. %.2f \n",Float.valueOf(details.get(acccNumTo-1).get(2)));
-
-        double transfer;
-        do {
+        if(acccNumFrom==0)return;
+        acccNumTo = getAccNum("Enter To account number   (SDB-xxxxx)");    
+        if(acccNumFrom>0 && acccNumTo>0){
+            System.out.printf("Sender current account balance  : Rs. %.2f \n",Float.valueOf(details.get(acccNumFrom-1).get(2)));
+            System.out.printf("Reciver current account balance : Rs. %.2f \n",Float.valueOf(details.get(acccNumTo-1).get(2)));
+            double transfer;
+            do {
                 transfer = getDoubleInput("Transfer Amount                 : Rs. ");
                 if(transfer<100){
                     System.out.printf(ERROR_MESSAGE,"Insufficient amount to transfer ");
@@ -273,7 +273,6 @@ public class BankingAppNew{
                     }else break;
                 }
                 double currentBalSend = Double.valueOf(details.get(acccNumFrom-1).get(2))-1.02*transfer;
-                System.out.println(currentBalSend);
                 double currentBalReciv = Double.valueOf(details.get(acccNumTo-1).get(2))+ transfer;
                 details.get(acccNumFrom-1).set(2, currentBalSend+"");
                 System.out.printf("new Sender account balance is   : Rs. %,.2f\n",Float.valueOf(details.get(acccNumFrom-1).get(2)));
@@ -283,11 +282,12 @@ public class BankingAppNew{
                     continue;
                 }else break;
             } while (true);
+        }
     }
     public static void checkBalance(){
         do{
-            int accNum = getAccNum("Enter account number (SDB-xxxxx)  :");
-            if(details.get(accNum-1).size()>0){
+            int accNum = getAccNum("Enter account number (SDB-xxxxx)  ");
+            if(details.size()>0 && accNum>0 && details.get(accNum-1).size()>0){
                 System.out.printf("Account holder name is       : %s\n",details.get(accNum-1).get(1));
                 System.out.printf("Current Account balance is   : Rs. %.2f\n",Float.valueOf(details.get(accNum-1).get(2)));
                 System.out.printf("Available Account balance is : Rs. %.2f\n",Float.valueOf(details.get(accNum-1).get(2))-500);
@@ -300,7 +300,7 @@ public class BankingAppNew{
     public static void deleteAccount(){
         do {
             int accNum = getAccNum("Enter account number to delete (SDB-xxxxx)  ");
-            if(details.size()>0 && details.get(accNum-1).size()>0){
+            if(details.size()>0 && accNum>0  && details.get(accNum-1).size()>0){
                 String name=details.get(accNum-1).get(1);
                 System.out.printf("Account holder name is       : %s\n",name);
                 System.out.printf("Current Account balance is   : Rs. %.2f\n",Float.valueOf(details.get(accNum-1).get(2)));
@@ -315,6 +315,7 @@ public class BankingAppNew{
                 }else break;
             }else break;
         } while (true);
+        
     }
     
 }
