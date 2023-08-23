@@ -15,8 +15,6 @@ public class BankingAppNew{
 
     static ArrayList<ArrayList<String>> details = new ArrayList<ArrayList<String>>();
     
-
-
     public static void main(String[] args) {
 
         
@@ -237,7 +235,7 @@ public class BankingAppNew{
             
             
 
-            if(valid && details.get(pass-1).size()== 0){
+            if(valid && pass>0 && details.get(pass-1).size()== 0){
                 System.out.printf(ERROR_MESSAGE,"Account is not found");
                 valid = false;
             }
@@ -268,7 +266,7 @@ public class BankingAppNew{
                     }else break;
                 }else if((Double.valueOf(details.get(acccNumFrom-1).get(2))-1.02*transfer)<500){
                     System.out.printf(ERROR_MESSAGE,"Exceed the Account minimum balance ");
-                    if(getStringInput("Do you want to try again ? (Y/n) ").toUpperCase().equals("Y")){
+                    if(getStringInput("nDo you want to try again ? (Y/n) ").toUpperCase().equals("Y")){
                         continue;
                     }else break;
                 }
